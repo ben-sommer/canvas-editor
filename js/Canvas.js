@@ -52,7 +52,7 @@ export class Canvas {
         this.ctx.fillRect(0, 0, this.width, this.height);
 
         for (const sprite of this.sprites) {
-            sprite.draw();
+            sprite.drawDecorated();
         }
     }
 
@@ -66,15 +66,22 @@ export class Canvas {
     handleMouseDown(x, y) {
         this.dragging = true;
 
+        for (const sprite of this.sprites) {
+            sprite.focus = false;
+        }
+
         for (const sprite of this.sprites.slice().reverse()) {
             if (sprite.checkIntersection(x, y)) {
                 this.dragStartOffestX = x - sprite.x;
                 this.dragStartOffsetY = y - sprite.y;
                 this.draggedElement = sprite;
+                sprite.focus = true;
 
                 break;
             }
         }
+
+        this.draw();
     }
 
     handleMouseUp() {

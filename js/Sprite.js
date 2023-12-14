@@ -8,6 +8,7 @@ export class Sprite {
         this.height = height;
         this.draggable = true;
         this.id = uuid();
+        this._focus = false;
     }
 
     setCanvas(canvas) {
@@ -18,10 +19,18 @@ export class Sprite {
         this.ctx = ctx;
     }
 
+    get x() {
+        return this._x;
+    }
+
     set x(value) {
         this._x = value;
         this.canvas.draw();
         this.bringToFront();
+    }
+
+    get y() {
+        return this._y;
     }
 
     set y(value) {
@@ -37,15 +46,39 @@ export class Sprite {
         ];
     }
 
-    get x() {
-        return this._x;
+    draw() {}
+
+    drawDecorated() {
+        this.draw();
+
+        if (this.focus) {
+            this.drawControlRect();
+        }
     }
 
-    get y() {
-        return this._y;
+    drawControlRect() {
+        // Outer Box
+        this.ctx.strokeStyle = "#1141d1";
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(
+            this.x - this.ctx.lineWidth,
+            this.y - this.ctx.lineWidth,
+            this.width + 2 * this.ctx.lineWidth,
+            this.height + 2 * this.ctx.lineWidth
+        );
+
+        // Handles
     }
 
     checkIntersection(x, y) {
         return false;
+    }
+
+    set focus(focus) {
+        this._focus = focus;
+    }
+
+    get focus() {
+        return this._focus;
     }
 }
