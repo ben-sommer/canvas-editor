@@ -26,6 +26,10 @@ export class Canvas {
 
         this.draw();
 
+        this.bindListeners();
+    }
+
+    bindListeners() {
         this.canvas.addEventListener("mousemove", (e) =>
             this.handleMouseMove(e.offsetX, e.offsetY)
         );
