@@ -4,8 +4,8 @@ export class Sprite {
     constructor({ x, y, width, height }) {
         this._x = x;
         this._y = y;
-        this.width = width;
-        this.height = height;
+        this._width = width;
+        this._height = height;
         this.draggable = true;
         this.id = uuid();
         this._focus = false;
@@ -35,6 +35,26 @@ export class Sprite {
 
     set y(value) {
         this._y = value;
+        this.canvas.draw();
+        this.bringToFront();
+    }
+
+    get width() {
+        return this._width;
+    }
+
+    set width(value) {
+        this._width = value;
+        this.canvas.draw();
+        this.bringToFront();
+    }
+
+    get height() {
+        return this._height;
+    }
+
+    set height(value) {
+        this._height = value;
         this.canvas.draw();
         this.bringToFront();
     }

@@ -8,7 +8,7 @@ export const uuid = () => {
 };
 
 export const getHandleLocations = (sprite) => {
-    const handleSize = 8;
+    const handleSize = 10;
     let outer = [];
     let inner = [];
 
@@ -23,6 +23,8 @@ export const getHandleLocations = (sprite) => {
                     y: y - handleSize / 2 + j * 2 - 1,
                     width: handleSize,
                     height: handleSize,
+                    i,
+                    j,
                 });
 
                 inner.push({
@@ -30,6 +32,8 @@ export const getHandleLocations = (sprite) => {
                     y: y - handleSize / 2 + j * 2 + 1 - 1,
                     width: handleSize - 2,
                     height: handleSize - 2,
+                    i,
+                    j,
                 });
             }
         }

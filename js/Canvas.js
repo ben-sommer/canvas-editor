@@ -59,8 +59,73 @@ export class Canvas {
 
     handleMouseMove(x, y) {
         if (this.draggedElement) {
-            this.draggedElement.x = x - this.dragStartOffestX;
-            this.draggedElement.y = y - this.dragStartOffsetY;
+            if (this.selectedHandle) {
+                const { i, j } = this.selectedHandle;
+
+                switch ([i, j].join(",")) {
+                    case "0,0":
+                        this.draggedElement.width =
+                            this.draggedElement.width -
+                            x +
+                            this.draggedElement.x;
+                        this.draggedElement.x = x;
+                        //
+                        this.draggedElement.height =
+                            this.draggedElement.height -
+                            y +
+                            this.draggedElement.y;
+                        this.draggedElement.y = y;
+                        break;
+                    case "0,0.5":
+                        this.draggedElement.width =
+                            this.draggedElement.width -
+                            x +
+                            this.draggedElement.x;
+                        this.draggedElement.x = x;
+                        break;
+                    case "0,1":
+                        this.draggedElement.width =
+                            this.draggedElement.width -
+                            x +
+                            this.draggedElement.x;
+                        this.draggedElement.x = x;
+                        //
+                        this.draggedElement.height = y - this.draggedElement.y;
+                        break;
+                    case "0.5,0":
+                        this.draggedElement.height =
+                            this.draggedElement.height -
+                            y +
+                            this.draggedElement.y;
+                        this.draggedElement.y = y;
+                        break;
+                    case "0.5,1":
+                        this.draggedElement.height = y - this.draggedElement.y;
+                        break;
+                    case "1,0":
+                        this.draggedElement.width = x - this.draggedElement.x;
+                        //
+                        this.draggedElement.height =
+                            this.draggedElement.height -
+                            y +
+                            this.draggedElement.y;
+                        this.draggedElement.y = y;
+                        break;
+                    case "1,0.5":
+                        this.draggedElement.width = x - this.draggedElement.x;
+                        break;
+                    case "1,1":
+                        this.draggedElement.width = x - this.draggedElement.x;
+                        //
+                        this.draggedElement.height = y - this.draggedElement.y;
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                this.draggedElement.x = x - this.dragStartOffestX;
+                this.draggedElement.y = y - this.dragStartOffsetY;
+            }
         }
     }
 
