@@ -1,3 +1,5 @@
+import { Sprite } from "./Sprite.js";
+
 export class Canvas {
     constructor(selector = "canvas") {
         /**
@@ -13,7 +15,7 @@ export class Canvas {
         this.ctx = this.canvas.getContext("2d");
 
         /**
-         * @type {ShapeSprite[]}
+         * @type {Sprite[]}
          */
         this.sprites = [];
 
@@ -24,10 +26,14 @@ export class Canvas {
 
         this.draw();
 
-        this.canvas.addEventListener("mousemove", this.handleMouseMove);
-        this.canvas.addEventListener("mousedown", this.handleMouseDown);
-        this.canvas.addEventListener("mouseup", this.handleMouseUp);
-        this.canvas.addEventListener("mouseleave", this.handleMouseUp);
+        this.canvas.addEventListener("mousemove", (e) =>
+            this.handleMouseMove(e.offsetX, e.offsetY)
+        );
+        this.canvas.addEventListener("mousedown", (e) =>
+            this.handleMouseDown(e.offsetX, e.offsetY)
+        );
+        this.canvas.addEventListener("mouseup", () => this.handleMouseUp());
+        this.canvas.addEventListener("mouseleave", () => this.handleMouseUp());
     }
 
     addSprite(sprite) {
@@ -46,16 +52,29 @@ export class Canvas {
         }
     }
 
-    handleMouseMove(event) {
-        const x = event.offsetX;
-        const y = event.offsetY;
+    handleMouseMove(x, y) {
+        if (this.draggedElement) {
+            this.draggedElement.x = x - this.dragStartOffestX;
+            this.draggedElement.y = y - this.dragStartOffsetY;
+        }
     }
 
-    handleMouseDown(event) {
+    handleMouseDown(x, y) {
         this.dragging = true;
+
+        for (const sprite of this.sprites.slice().reverse()) {
+            if (sprite.checkIntersection(x, y)) {
+                this.dragStartOffestX = x - sprite.x;
+                this.dragStartOffsetY = y - sprite.y;
+                this.draggedElement = sprite;
+
+                break;
+            }
+        }
     }
 
-    handleMouseUp(event) {
+    handleMouseUp() {
         this.dragging = false;
+        this.draggedElement = null;
     }
 }

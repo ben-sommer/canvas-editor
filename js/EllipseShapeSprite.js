@@ -3,6 +3,9 @@ import { ShapeSprite } from "./ShapeSprite.js";
 export class EllipseShapeSprite extends ShapeSprite {
     constructor({ color, x, y, width, height }) {
         super({ color, x, y, width, height });
+
+        this.rx = this.width / 2;
+        this.ry = this.height / 2;
     }
 
     draw() {
@@ -18,5 +21,15 @@ export class EllipseShapeSprite extends ShapeSprite {
             2 * Math.PI
         );
         this.ctx.fill();
+    }
+
+    checkIntersection(x, y) {
+        const LHS =
+            this.ry ** 2 * (x - (this.x + this.rx)) ** 2 +
+            this.rx ** 2 * (y - (this.y + this.ry)) ** 2;
+
+        const RHS = this.rx ** 2 * this.ry ** 2;
+
+        return LHS <= RHS;
     }
 }
