@@ -58,16 +58,43 @@ export class Sprite {
 
     drawControlRect() {
         // Outer Box
+        const boxWidth = 1;
         this.ctx.strokeStyle = "#1141d1";
-        this.ctx.lineWidth = 1;
+        this.ctx.lineWidth = boxWidth;
         this.ctx.strokeRect(
-            this.x - this.ctx.lineWidth,
-            this.y - this.ctx.lineWidth,
-            this.width + 2 * this.ctx.lineWidth,
-            this.height + 2 * this.ctx.lineWidth
+            this.x - boxWidth,
+            this.y - boxWidth,
+            this.width + 2 * boxWidth,
+            this.height + 2 * boxWidth
         );
 
         // Handles
+        const handleSize = 8;
+
+        for (let i = 0; i < 1.5; i += 0.5) {
+            for (let j = 0; j < 1.5; j += 0.5) {
+                if (i != 0.5 || j != 0.5) {
+                    const x = this.x + i * this.width;
+                    const y = this.y + j * this.height;
+
+                    this.ctx.fillStyle = "#0b2f9c";
+                    this.ctx.fillRect(
+                        x - handleSize / 2 - boxWidth + i * 2,
+                        y - handleSize / 2 - boxWidth + j * 2,
+                        handleSize,
+                        handleSize
+                    );
+
+                    this.ctx.fillStyle = "#ffffff";
+                    this.ctx.fillRect(
+                        x - handleSize / 2 - boxWidth + i * 2 + 1,
+                        y - handleSize / 2 - boxWidth + j * 2 + 1,
+                        handleSize - 2,
+                        handleSize - 2
+                    );
+                }
+            }
+        }
     }
 
     checkIntersection(x, y) {
