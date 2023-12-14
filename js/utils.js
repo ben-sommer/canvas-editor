@@ -6,3 +6,34 @@ export const uuid = () => {
         ).toString(16)
     );
 };
+
+export const getHandleLocations = (sprite) => {
+    const handleSize = 8;
+    let outer = [];
+    let inner = [];
+
+    for (let i = 0; i < 1.5; i += 0.5) {
+        for (let j = 0; j < 1.5; j += 0.5) {
+            if (i != 0.5 || j != 0.5) {
+                const x = sprite.x + i * sprite.width;
+                const y = sprite.y + j * sprite.height;
+
+                outer.push({
+                    x: x - handleSize / 2 + i * 2 - 1,
+                    y: y - handleSize / 2 + j * 2 - 1,
+                    width: handleSize,
+                    height: handleSize,
+                });
+
+                inner.push({
+                    x: x - handleSize / 2 + i * 2 + 1 - 1,
+                    y: y - handleSize / 2 + j * 2 + 1 - 1,
+                    width: handleSize - 2,
+                    height: handleSize - 2,
+                });
+            }
+        }
+    }
+
+    return { outer, inner };
+};

@@ -1,4 +1,5 @@
 import { Sprite } from "./Sprite.js";
+import { getHandleLocations } from "./utils.js";
 
 export class Canvas {
     constructor(selector = "canvas") {
@@ -70,7 +71,27 @@ export class Canvas {
             sprite.focus = false;
         }
 
-        for (const sprite of this.sprites.slice().reverse()) {
+        this.selectedHandle = null;
+
+        loop: for (const sprite of this.sprites.slice().reverse()) {
+            const { outer } = getHandleLocations(sprite);
+
+            for (const handle of outer) {
+                if (
+                    x >= handle.x &&
+                    x <= handle.x + handle.width &&
+                    y >= handle.y &&
+                    y <= handle.y + handle.height
+                ) {
+                    this.selectedHandle = handle;
+                    this.dragStartOffestX = x - sprite.x;
+                    this.dragStartOffsetY = y - sprite.y;
+                    this.draggedElement = sprite;
+                    sprite.focus = true;
+                    break loop;
+                }
+            }
+
             if (sprite.checkIntersection(x, y)) {
                 this.dragStartOffestX = x - sprite.x;
                 this.dragStartOffsetY = y - sprite.y;
