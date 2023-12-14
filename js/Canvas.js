@@ -62,65 +62,71 @@ export class Canvas {
             if (this.selectedHandle) {
                 const { i, j } = this.selectedHandle;
 
+                const old = {
+                    x: this.draggedElement.x,
+                    y: this.draggedElement.y,
+                    width: this.draggedElement.width,
+                    height: this.draggedElement.height,
+                };
+
+                let newValues = {
+                    x: this.draggedElement.x,
+                    y: this.draggedElement.y,
+                    width: this.draggedElement.width,
+                    height: this.draggedElement.height,
+                };
+
                 switch ([i, j].join(",")) {
                     case "0,0":
-                        this.draggedElement.width =
-                            this.draggedElement.width -
-                            x +
-                            this.draggedElement.x;
-                        this.draggedElement.x = x;
+                        newValues.width = newValues.width - x + newValues.x;
+                        newValues.x = x;
                         //
-                        this.draggedElement.height =
-                            this.draggedElement.height -
-                            y +
-                            this.draggedElement.y;
-                        this.draggedElement.y = y;
+                        newValues.height = newValues.height - y + newValues.y;
+                        newValues.y = y;
                         break;
                     case "0,0.5":
-                        this.draggedElement.width =
-                            this.draggedElement.width -
-                            x +
-                            this.draggedElement.x;
-                        this.draggedElement.x = x;
+                        newValues.width = newValues.width - x + newValues.x;
+                        newValues.x = x;
                         break;
                     case "0,1":
-                        this.draggedElement.width =
-                            this.draggedElement.width -
-                            x +
-                            this.draggedElement.x;
-                        this.draggedElement.x = x;
+                        newValues.width = newValues.width - x + newValues.x;
+                        newValues.x = x;
                         //
-                        this.draggedElement.height = y - this.draggedElement.y;
+                        newValues.height = y - newValues.y;
                         break;
                     case "0.5,0":
-                        this.draggedElement.height =
-                            this.draggedElement.height -
-                            y +
-                            this.draggedElement.y;
-                        this.draggedElement.y = y;
+                        newValues.height = newValues.height - y + newValues.y;
+                        newValues.y = y;
                         break;
                     case "0.5,1":
-                        this.draggedElement.height = y - this.draggedElement.y;
+                        newValues.height = y - newValues.y;
                         break;
                     case "1,0":
-                        this.draggedElement.width = x - this.draggedElement.x;
+                        newValues.width = x - newValues.x;
                         //
-                        this.draggedElement.height =
-                            this.draggedElement.height -
-                            y +
-                            this.draggedElement.y;
-                        this.draggedElement.y = y;
+                        newValues.height = newValues.height - y + newValues.y;
+                        newValues.y = y;
                         break;
                     case "1,0.5":
-                        this.draggedElement.width = x - this.draggedElement.x;
+                        newValues.width = x - newValues.x;
                         break;
                     case "1,1":
-                        this.draggedElement.width = x - this.draggedElement.x;
+                        newValues.width = x - newValues.x;
                         //
-                        this.draggedElement.height = y - this.draggedElement.y;
+                        newValues.height = y - newValues.y;
                         break;
                     default:
                         break;
+                }
+
+                if (newValues.width > 0) {
+                    this.draggedElement.width = newValues.width;
+                    this.draggedElement.x = newValues.x;
+                }
+
+                if (newValues.height > 0) {
+                    this.draggedElement.height = newValues.height;
+                    this.draggedElement.y = newValues.y;
                 }
             } else {
                 this.draggedElement.x = x - this.dragStartOffestX;
@@ -141,7 +147,7 @@ export class Canvas {
         loop: for (const sprite of this.sprites.slice().reverse()) {
             const { outer } = getHandleLocations(sprite);
 
-            for (const handle of outer) {
+            for (const handle of outer.slice().reverse()) {
                 if (
                     x >= handle.x &&
                     x <= handle.x + handle.width &&
