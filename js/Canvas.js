@@ -1,4 +1,5 @@
 import { Sprite } from "./Sprite.js";
+import { ImageSprite } from "./ImageSprite.js";
 import { getHandleLocations } from "./utils.js";
 
 export class Canvas {
@@ -39,6 +40,9 @@ export class Canvas {
         );
         this.canvas.addEventListener("mouseup", () => this.handleMouseUp());
         this.canvas.addEventListener("mouseleave", () => this.handleMouseUp());
+
+        document.body.addEventListener("dragover", (e) => e.preventDefault());
+        document.body.addEventListener("drop", (e) => this.handleDrop(e));
     }
 
     addSprite(sprite) {
@@ -182,5 +186,59 @@ export class Canvas {
     handleMouseUp() {
         this.dragging = false;
         this.draggedElement = null;
+    }
+
+    async handleImageDrop(file) {
+        console.log(file);
+        let image = new Image();
+
+        console.log(file.type);
+
+        if (file.type == "image/svg+xml") {
+            image.src = `data:image/svg+xml;base64,${btoa(await file.text())}`;
+        } else {
+            image.src = URL.createObjectURL(file);
+        }
+
+        image.onload = () => {
+            const factor = 240 / Math.max(image.width, image.height);
+
+            this.addSprite(
+                new ImageSprite({
+                    x: 0,
+                    y: 0,
+                    width: image.width * factor,
+                    height: image.height * factor,
+                    image,
+                })
+            );
+        };
+    }
+
+    handleDrop(e) {
+        const allowedTypes = ["image/svg+xml", "image/jpeg", "image/png"];
+
+        if (e.dataTransfer.items) {
+            // Use DataTransferItemList interface to access the file(s)
+            [...e.dataTransfer.items].forEach((item, i) => {
+                // If dropped items aren't files, reject them
+                if (item.kind === "file") {
+                    const file = item.getAsFile();
+
+                    if (allowedTypes.includes(file.type)) {
+                        this.handleImageDrop(file);
+                    }
+                }
+            });
+        } else {
+            // Use DataTransfer interface to access the file(s)
+            [...e.dataTransfer.files].forEach((file, i) => {
+                if (allowedTypes.includes(file.type)) {
+                    this.handleImageDrop(file);
+                }
+            });
+        }
+
+        e.preventDefault();
     }
 }
