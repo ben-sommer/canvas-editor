@@ -52,7 +52,9 @@ export class Canvas {
         this.ctx.fillStyle = "#ffffff";
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        for (const sprite of this.sprites) {
+        for (const sprite of this.sprites.sort((a, b) =>
+            a.focus ? 1 : b.focus ? -1 : 0
+        )) {
             sprite.drawDecorated();
         }
     }
@@ -159,6 +161,7 @@ export class Canvas {
                     this.dragStartOffsetY = y - sprite.y;
                     this.draggedElement = sprite;
                     sprite.focus = true;
+                    sprite.bringToFront();
                     break loop;
                 }
             }
