@@ -117,9 +117,18 @@ export class Canvas {
                         newValues.width = x - newValues.x;
                         break;
                     case "1,1":
-                        newValues.width = x - newValues.x;
+                        const m = newValues.height / newValues.width;
+
+                        const newX =
+                            (m * newValues.x - newValues.y + x / m + y) /
+                            (1 / m + m);
+
+                        const newY = (x - newX) / m + y;
+
+                        newValues.width = newX - newValues.x;
                         //
-                        newValues.height = y - newValues.y;
+                        newValues.height = newY - newValues.y;
+
                         break;
                     default:
                         break;
