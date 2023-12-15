@@ -192,7 +192,7 @@ export class Canvas {
         if (this.focussedElement) {
             let step = 5;
 
-            if (e.metaKey) {
+            if (e.ctrlKey) {
                 step = 1;
             }
 
