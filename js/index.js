@@ -3,7 +3,7 @@ import { EllipseShapeSprite } from "./EllipseShapeSprite.js";
 import { RectShapeSprite } from "./RectShapeSprite.js";
 import { TextSprite } from "./TextSprite.js";
 
-const canvas = new Canvas("#canvas");
+const canvas = new Canvas({ selector: "#canvas", backgroundColor: "#ffffff" });
 
 window.canvas = canvas;
 

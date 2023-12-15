@@ -1,9 +1,9 @@
 import { Sprite } from "./Sprite.js";
 import { ImageSprite } from "./ImageSprite.js";
-import { getHandleLocations } from "./utils.js";
+import { PIXEL_RATIO, getHandleLocations } from "./utils.js";
 
 export class Canvas {
-    constructor(selector = "canvas") {
+    constructor({ selector = "canvas", backgroundColor = "#ffffff" }) {
         /**
          * @type {HTMLCanvasElement}
          */
@@ -26,9 +26,16 @@ export class Canvas {
         this.height = this.canvas.height =
             this.canvas.getBoundingClientRect().height;
 
+        this.canvas.width *= PIXEL_RATIO;
+        this.canvas.height *= PIXEL_RATIO;
+
+        this.ctx.setTransform(PIXEL_RATIO, 0, 0, PIXEL_RATIO, 0, 0);
+
         this.draw();
 
         this.bindListeners();
+
+        this.backgroundColor = backgroundColor;
     }
 
     bindListeners() {
@@ -53,7 +60,7 @@ export class Canvas {
     }
 
     draw() {
-        this.ctx.fillStyle = "#ffffff";
+        this.ctx.fillStyle = this.backgroundColor;
         this.ctx.fillRect(0, 0, this.width, this.height);
 
         for (const sprite of this.sprites.sort((a, b) =>
