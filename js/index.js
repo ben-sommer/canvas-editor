@@ -1,6 +1,7 @@
 import { Canvas } from "./Canvas.js";
 import { EllipseShapeSprite } from "./EllipseShapeSprite.js";
 import { RectShapeSprite } from "./RectShapeSprite.js";
+import { TextSprite } from "./TextSprite.js";
 
 const canvas = new Canvas("#canvas");
 
@@ -25,3 +26,14 @@ const ellipse = new EllipseShapeSprite({
 });
 
 canvas.addSprite(ellipse);
+
+const text = new TextSprite({
+    text: "Test",
+    fontSize: 48,
+    color: "#000",
+    fontFamily: "Arial",
+    x: 220,
+    y: 170,
+});
+
+canvas.addSprite(text);
