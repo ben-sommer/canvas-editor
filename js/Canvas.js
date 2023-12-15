@@ -68,13 +68,6 @@ export class Canvas {
             if (this.selectedHandle) {
                 const { i, j } = this.selectedHandle;
 
-                const old = {
-                    x: this.draggedElement.x,
-                    y: this.draggedElement.y,
-                    width: this.draggedElement.width,
-                    height: this.draggedElement.height,
-                };
-
                 let newValues = {
                     x: this.draggedElement.x,
                     y: this.draggedElement.y,
@@ -84,11 +77,26 @@ export class Canvas {
 
                 switch ([i, j].join(",")) {
                     case "0,0":
-                        newValues.width = newValues.width - x + newValues.x;
-                        newValues.x = x;
-                        //
-                        newValues.height = newValues.height - y + newValues.y;
-                        newValues.y = y;
+                        {
+                            const m = newValues.height / newValues.width;
+
+                            const newX =
+                                (m * (newValues.x + newValues.width) -
+                                    (newValues.y + newValues.height) +
+                                    x / m +
+                                    y) /
+                                (1 / m + m);
+
+                            const newY = (x - newX) / m + y;
+
+                            newValues.width =
+                                newValues.width - newX + newValues.x;
+                            newValues.x = newX;
+                            //
+                            newValues.height =
+                                newValues.height - newY + newValues.y;
+                            newValues.y = newY;
+                        }
                         break;
                     case "0,0.5":
                         newValues.width = newValues.width - x + newValues.x;
@@ -96,20 +104,16 @@ export class Canvas {
                         break;
                     case "0,1":
                         {
-                            // Negative gradient?
-
-                            const m = newValues.height / newValues.width;
+                            const m = -newValues.height / newValues.width;
 
                             const newX =
-                                (m * (newValues.x - newValues.width) -
+                                (m * (newValues.x + newValues.width) -
                                     newValues.y +
                                     x / m +
                                     y) /
                                 (1 / m + m);
 
                             const newY = (x - newX) / m + y;
-
-                            console.log(newX, newY);
 
                             newValues.width =
                                 newValues.width - newX + newValues.x;
@@ -126,10 +130,24 @@ export class Canvas {
                         newValues.height = y - newValues.y;
                         break;
                     case "1,0":
-                        newValues.width = x - newValues.x;
-                        //
-                        newValues.height = newValues.height - y + newValues.y;
-                        newValues.y = y;
+                        {
+                            const m = -newValues.height / newValues.width;
+
+                            const newX =
+                                (m * newValues.x -
+                                    (newValues.y + newValues.height) +
+                                    x / m +
+                                    y) /
+                                (1 / m + m);
+
+                            const newY = (x - newX) / m + y;
+
+                            newValues.width = newX - newValues.x;
+                            //
+                            newValues.height =
+                                newValues.height - newY + newValues.y;
+                            newValues.y = newY;
+                        }
                         break;
                     case "1,0.5":
                         newValues.width = x - newValues.x;
