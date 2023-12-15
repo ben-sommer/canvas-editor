@@ -95,10 +95,28 @@ export class Canvas {
                         newValues.x = x;
                         break;
                     case "0,1":
-                        newValues.width = newValues.width - x + newValues.x;
-                        newValues.x = x;
-                        //
-                        newValues.height = y - newValues.y;
+                        {
+                            // Negative gradient?
+
+                            const m = newValues.height / newValues.width;
+
+                            const newX =
+                                (m * (newValues.x - newValues.width) -
+                                    newValues.y +
+                                    x / m +
+                                    y) /
+                                (1 / m + m);
+
+                            const newY = (x - newX) / m + y;
+
+                            console.log(newX, newY);
+
+                            newValues.width =
+                                newValues.width - newX + newValues.x;
+                            newValues.x = newX;
+                            //
+                            newValues.height = newY - newValues.y;
+                        }
                         break;
                     case "0.5,0":
                         newValues.height = newValues.height - y + newValues.y;
@@ -117,18 +135,19 @@ export class Canvas {
                         newValues.width = x - newValues.x;
                         break;
                     case "1,1":
-                        const m = newValues.height / newValues.width;
+                        {
+                            const m = newValues.height / newValues.width;
 
-                        const newX =
-                            (m * newValues.x - newValues.y + x / m + y) /
-                            (1 / m + m);
+                            const newX =
+                                (m * newValues.x - newValues.y + x / m + y) /
+                                (1 / m + m);
 
-                        const newY = (x - newX) / m + y;
+                            const newY = (x - newX) / m + y;
 
-                        newValues.width = newX - newValues.x;
-                        //
-                        newValues.height = newY - newValues.y;
-
+                            newValues.width = newX - newValues.x;
+                            //
+                            newValues.height = newY - newValues.y;
+                        }
                         break;
                     default:
                         break;
