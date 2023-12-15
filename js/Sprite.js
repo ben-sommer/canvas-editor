@@ -103,6 +103,119 @@ export class Sprite {
         }
     }
 
+    drag(handle, x, y) {
+        const { i, j } = handle;
+
+        let newValues = {
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height,
+        };
+
+        switch ([i, j].join(",")) {
+            case "0,0":
+                {
+                    const m = newValues.height / newValues.width;
+
+                    const newX =
+                        (m * (newValues.x + newValues.width) -
+                            (newValues.y + newValues.height) +
+                            x / m +
+                            y) /
+                        (1 / m + m);
+
+                    const newY = (x - newX) / m + y;
+
+                    newValues.width = newValues.width - newX + newValues.x;
+                    newValues.x = newX;
+                    //
+                    newValues.height = newValues.height - newY + newValues.y;
+                    newValues.y = newY;
+                }
+                break;
+            case "0,0.5":
+                newValues.width = newValues.width - x + newValues.x;
+                newValues.x = x;
+                break;
+            case "0,1":
+                {
+                    const m = -newValues.height / newValues.width;
+
+                    const newX =
+                        (m * (newValues.x + newValues.width) -
+                            newValues.y +
+                            x / m +
+                            y) /
+                        (1 / m + m);
+
+                    const newY = (x - newX) / m + y;
+
+                    newValues.width = newValues.width - newX + newValues.x;
+                    newValues.x = newX;
+                    //
+                    newValues.height = newY - newValues.y;
+                }
+                break;
+            case "0.5,0":
+                newValues.height = newValues.height - y + newValues.y;
+                newValues.y = y;
+                break;
+            case "0.5,1":
+                newValues.height = y - newValues.y;
+                break;
+            case "1,0":
+                {
+                    const m = -newValues.height / newValues.width;
+
+                    const newX =
+                        (m * newValues.x -
+                            (newValues.y + newValues.height) +
+                            x / m +
+                            y) /
+                        (1 / m + m);
+
+                    const newY = (x - newX) / m + y;
+
+                    newValues.width = newX - newValues.x;
+                    //
+                    newValues.height = newValues.height - newY + newValues.y;
+                    newValues.y = newY;
+                }
+                break;
+            case "1,0.5":
+                newValues.width = x - newValues.x;
+                break;
+            case "1,1":
+                {
+                    const m = newValues.height / newValues.width;
+
+                    const newX =
+                        (m * newValues.x - newValues.y + x / m + y) /
+                        (1 / m + m);
+
+                    const newY = (x - newX) / m + y;
+
+                    newValues.width = newX - newValues.x;
+                    //
+                    newValues.height = newY - newValues.y;
+                }
+                break;
+            default:
+                break;
+        }
+
+        if (newValues.width > 0) {
+            this.width = newValues.width;
+            this.x = newValues.x;
+        }
+
+        if (newValues.height > 0) {
+            this.height = newValues.height;
+            this.y = newValues.y;
+        }
+    }
+
     checkIntersection(x, y) {
         return false;
     }

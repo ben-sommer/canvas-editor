@@ -50,6 +50,8 @@ export class Canvas {
 
         document.body.addEventListener("dragover", (e) => e.preventDefault());
         document.body.addEventListener("drop", (e) => this.handleDrop(e));
+
+        document.body.addEventListener("keydown", (e) => this.handleKeyDown(e));
     }
 
     addSprite(sprite) {
@@ -73,120 +75,7 @@ export class Canvas {
     handleMouseMove(x, y) {
         if (this.draggedElement) {
             if (this.selectedHandle) {
-                const { i, j } = this.selectedHandle;
-
-                let newValues = {
-                    x: this.draggedElement.x,
-                    y: this.draggedElement.y,
-                    width: this.draggedElement.width,
-                    height: this.draggedElement.height,
-                };
-
-                switch ([i, j].join(",")) {
-                    case "0,0":
-                        {
-                            const m = newValues.height / newValues.width;
-
-                            const newX =
-                                (m * (newValues.x + newValues.width) -
-                                    (newValues.y + newValues.height) +
-                                    x / m +
-                                    y) /
-                                (1 / m + m);
-
-                            const newY = (x - newX) / m + y;
-
-                            newValues.width =
-                                newValues.width - newX + newValues.x;
-                            newValues.x = newX;
-                            //
-                            newValues.height =
-                                newValues.height - newY + newValues.y;
-                            newValues.y = newY;
-                        }
-                        break;
-                    case "0,0.5":
-                        newValues.width = newValues.width - x + newValues.x;
-                        newValues.x = x;
-                        break;
-                    case "0,1":
-                        {
-                            const m = -newValues.height / newValues.width;
-
-                            const newX =
-                                (m * (newValues.x + newValues.width) -
-                                    newValues.y +
-                                    x / m +
-                                    y) /
-                                (1 / m + m);
-
-                            const newY = (x - newX) / m + y;
-
-                            newValues.width =
-                                newValues.width - newX + newValues.x;
-                            newValues.x = newX;
-                            //
-                            newValues.height = newY - newValues.y;
-                        }
-                        break;
-                    case "0.5,0":
-                        newValues.height = newValues.height - y + newValues.y;
-                        newValues.y = y;
-                        break;
-                    case "0.5,1":
-                        newValues.height = y - newValues.y;
-                        break;
-                    case "1,0":
-                        {
-                            const m = -newValues.height / newValues.width;
-
-                            const newX =
-                                (m * newValues.x -
-                                    (newValues.y + newValues.height) +
-                                    x / m +
-                                    y) /
-                                (1 / m + m);
-
-                            const newY = (x - newX) / m + y;
-
-                            newValues.width = newX - newValues.x;
-                            //
-                            newValues.height =
-                                newValues.height - newY + newValues.y;
-                            newValues.y = newY;
-                        }
-                        break;
-                    case "1,0.5":
-                        newValues.width = x - newValues.x;
-                        break;
-                    case "1,1":
-                        {
-                            const m = newValues.height / newValues.width;
-
-                            const newX =
-                                (m * newValues.x - newValues.y + x / m + y) /
-                                (1 / m + m);
-
-                            const newY = (x - newX) / m + y;
-
-                            newValues.width = newX - newValues.x;
-                            //
-                            newValues.height = newY - newValues.y;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-
-                if (newValues.width > 0) {
-                    this.draggedElement.width = newValues.width;
-                    this.draggedElement.x = newValues.x;
-                }
-
-                if (newValues.height > 0) {
-                    this.draggedElement.height = newValues.height;
-                    this.draggedElement.y = newValues.y;
-                }
+                this.draggedElement.drag(this.selectedHandle, x, y);
             } else {
                 this.draggedElement.x = x - this.dragStartOffestX;
                 this.draggedElement.y = y - this.dragStartOffsetY;
@@ -200,6 +89,8 @@ export class Canvas {
         for (const sprite of this.sprites) {
             sprite.focus = false;
         }
+
+        this.focussedElement = null;
 
         this.selectedHandle = null;
 
@@ -217,6 +108,7 @@ export class Canvas {
                     this.dragStartOffestX = x - sprite.x;
                     this.dragStartOffsetY = y - sprite.y;
                     this.draggedElement = sprite;
+                    this.focussedElement = sprite;
                     sprite.focus = true;
                     sprite.bringToFront();
                     break loop;
@@ -227,6 +119,7 @@ export class Canvas {
                 this.dragStartOffestX = x - sprite.x;
                 this.dragStartOffsetY = y - sprite.y;
                 this.draggedElement = sprite;
+                this.focussedElement = sprite;
                 sprite.focus = true;
 
                 break;
@@ -293,5 +186,34 @@ export class Canvas {
         }
 
         e.preventDefault();
+    }
+
+    handleKeyDown(e) {
+        if (this.focussedElement) {
+            let step = 5;
+
+            if (e.metaKey) {
+                step = 1;
+            }
+
+            if (e.shiftKey) {
+                step = 10;
+            }
+
+            switch (e.key) {
+                case "ArrowUp":
+                    this.focussedElement.y -= step;
+                    break;
+                case "ArrowDown":
+                    this.focussedElement.y += step;
+                    break;
+                case "ArrowLeft":
+                    this.focussedElement.x -= step;
+                    break;
+                case "ArrowRight":
+                    this.focussedElement.x += step;
+                    break;
+            }
+        }
     }
 }
